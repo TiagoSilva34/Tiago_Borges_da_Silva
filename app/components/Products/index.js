@@ -36,7 +36,10 @@ export const Products = () => {
           Cadastrar desconto
         </button>
         <div className="lg:flex items-center lg:justify-between">
-          <Image src={logo} width={200} height={200} alt="Logo" />
+          <a href="/">
+            <Image src={logo} width={100} height={100} alt="Logo" />
+
+          </a>
 
           <form className="w-full max-w-lg my-6">
             <div className="w-full">
