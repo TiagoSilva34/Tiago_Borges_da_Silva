@@ -6,12 +6,14 @@ import { ProductService } from "@/app/services/ProductService";
 import { Header } from "../Header";
 import Image from "next/image";
 import logo from "../../assets/MARCA-FUNDO-BRANCO.png";
+import { useRouter } from "next/navigation";
 
 export const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-
   const [productName, setProductName] = useState("")
+
+  const router = useRouter()
 
   const handleSearchProduct = (value) => {
         setProductName(value)
@@ -21,6 +23,7 @@ export const Products = () => {
 
        setFilteredProducts(filteredProduct)
   }
+  
 
   useEffect(() => {
     ProductService.getAllProducts().then((response) => {
@@ -32,13 +35,12 @@ export const Products = () => {
   return (
     <>
       <Header>
-        <button className=" top-1 right-0 absolute bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Cadastrar desconto
+        <button onClick={() => router.push('/cadastrar')} className="top-1 right-0 absolute bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          cadastrar desconto
         </button>
         <div className="lg:flex items-center lg:justify-between">
           <a href="/">
-            <Image src={logo} width={100} height={100} alt="Logo" />
-
+            <Image src={logo} width={300} height={200} alt="Logo" />
           </a>
 
           <form className="w-full max-w-lg my-6">

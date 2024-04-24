@@ -5,21 +5,35 @@ import { createContext } from 'react'
 export const ProductContext = createContext({})
 
 export const ProductProvider = ({children}) => {
-    const [productState, setProductState] = useState({})
+    const [storageData, setStorageData] = useState({})
+    const [storageType, setStorageType] = useState("") 
 
 
     useEffect(() => {
-        if(productState && productState.id) localStorage.setItem('productData', JSON.stringify(productState))
-    }, [productState])
+        if(storageData && storageData.id && storageType === "productData") {
+            localStorage.setItem('productData', JSON.stringify(storageData))
+            localStorage.setItem('storageType', JSON.stringify(storageType))
+        }
 
-    const getStoreData = () => {
-        const product = JSON.parse(localStorage.getItem("productData"))
+        else if (storageType === "campaignData") localStorage.setItem('campaignData', JSON.stringify(storageData))
+    }, [storageData, storageType])
 
-        setProductState(product)
+    const getStorageData = () => {
+        let storageType = JSON.parse(localStorage.getItem("storageType"))
+
+        if (storageType === "campaignData") {
+            const campaign = JSON.parse(localStorage.getItem("campaignData"))
+
+            return campaign
+        } else if (storageType === "productData") {
+            const product = JSON.parse(localStorage.getItem("productData"))
+
+            return product
+        }
     }
     
     return (
-        <ProductContext.Provider value={{ productState, setProductState, getStoreData }}>
+        <ProductContext.Provider value={{ setStorageType, setStorageData, getStorageData }}>
             {children}
         </ProductContext.Provider>
     )
