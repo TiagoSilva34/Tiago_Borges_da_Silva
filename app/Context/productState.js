@@ -10,12 +10,20 @@ export const ProductProvider = ({children}) => {
 
 
     useEffect(() => {
+        if (JSON.parse(localStorage.getItem("campaignData")) === null)
+        localStorage.setItem('campaignData', JSON.stringify([]))
+
         if(storageData && storageData.id && storageType === "productData") {
             localStorage.setItem('productData', JSON.stringify(storageData))
             localStorage.setItem('storageType', JSON.stringify(storageType))
         }
 
-        else if (storageType === "campaignData") localStorage.setItem('campaignData', JSON.stringify(storageData))
+        else if (storageType === "campaignData") {
+            let campaign = JSON.parse(localStorage.getItem("campaignData"))
+            let storageCampaign = [...campaign, storageData]
+            localStorage.setItem('campaignData', JSON.stringify(storageCampaign))
+            localStorage.setItem('storageType', JSON.stringify(storageType))
+        }
     }, [storageData, storageType])
 
     const getStorageData = () => {

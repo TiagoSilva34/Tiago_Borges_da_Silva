@@ -23,7 +23,7 @@ export default function ProductDetails() {
         </button>
         <div className="lg:flex items-center lg:justify-between">
           <a href="/">
-            <Image src={logo} width={300} height={200} alt="Logo" />
+            <Image src={logo} width={200} height={100} alt="Logo" />
           </a>
 
           <form className="w-full max-w-lg my-6">

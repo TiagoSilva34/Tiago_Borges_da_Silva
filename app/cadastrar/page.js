@@ -12,7 +12,7 @@ export default function Register() {
         </button>
         <div className="lg:flex items-center lg:justify-between">
           <a href="/">
-                <Image className="rounded-t-lg" src={logo} alt="Imagem do produto" width={300} height={300} />
+              <Image className="rounded-t-lg" src={logo} alt="Imagem do produto" width={200} height={100} />
           </a>
 
           <form className="w-full max-w-lg my-6">

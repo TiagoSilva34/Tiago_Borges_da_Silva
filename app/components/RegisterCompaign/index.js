@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ProductContext } from "../../context/productState";
+import { ProductService } from "@/app/services/ProductService";
+import moment from 'moment'
 
 export const RegisterCampaign = () => {
   const [tipo, setTipo] = useState("");
@@ -12,76 +14,106 @@ export const RegisterCampaign = () => {
 
   const [leve, setLeve] = useState("");
   const [pague, setPague] = useState("");
-  const [inativacao, setTInativacao] = useState("");
-  const [ativacao, setTAtivacao] = useState("");
+  const [inativacao, setInativacao] = useState("");
+  const [ativacao, setAtivacao] = useState("");
+  const [productName, setProductName] = useState("")
+  const [products, setProducts] = useState([]);
 
-  const { setStorageType, setStorageData} = useContext(ProductContext)
+  const { setStorageType, setStorageData } = useContext(ProductContext);
 
+  useEffect(() => {
+    ProductService.getAllProducts().then((response) => {
+      setProducts(response);
+    });
+  }, []);
 
   const handleCampaign = () => {
-    debugger
-    setStorageType("campaignData")
-    const campaignData = {
+    const date = new Date()
+    let hours = date.getHours()
+    let seconds = date.getSeconds()
+    const formattedHours = `${hours}:${seconds}`
+
+    setStorageType("campaignData");
+    let campaignData = {
+      productName,
       tipo,
       nome,
       descricao,
-      de,
-      por,
+      de: parseFloat(de),
+      por: parseFloat(por),
       leve,
       pague,
-      inativacao,
-      ativacao
-    }
+      inativacao: moment(inativacao).format('DD/MM/YYYY') + '-' + formattedHours,
+      ativacao: moment(ativacao).format('DD/MM/YYYY') + '-' + formattedHours
+    };
 
-    setStorageData(campaignData)
+    setStorageData(campaignData);
+  };
+
+  const handleGetDescription = (e) => {
+    setProductName(e.target.value)
+
+    products.map((product) => {
+      if (product.title.includes(productName)) setDescricao(product.description)
+    })
   }
 
   return (
-    <div>
+    <div className="px-8 py-8">
       <form>
-        <div class="mb-6">
-          <label
-            for="nome"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        <div className="mb-6">
+          <label for="nome" className="block mb-2 font-medium text-blue-600">
+            Nome do desconto
+          </label>
+          <select
+            id="tipo"
+            value={productName}
+            onChange={(e) => handleGetDescription(e)}
+            className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
           >
+            <option>Selecione o produto</option>
+            {products.map((product) => (
+              <option key={product.id} value={product.title}>{product.title}</option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-6">
+          <label for="nome" className="block mb-2 font-medium text-blue-600">
             Nome do desconto
           </label>
           <input
             type="text"
             value={nome}
             id="nome"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
             required
-            onChange={e => setNome(e.target.value)}
+            onChange={(e) => setNome(e.target.value)}
           />
         </div>
-        <div class="mb-6">
+        <div className="mb-6">
           <label
             for="descricao"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            className="block mb-2 font-medium text-blue-600"
           >
             Descrição
           </label>
           <textarea
-            onChange={e => setDescricao(e.target.value)}
+            onChange={(e) => setDescricao(e.target.value)}
             value={descricao}
             id="descricao"
             rows="4"
-            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
           ></textarea>
         </div>
-        <div class="mb-6">
-          <label
-            for="tipo"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
+        <div className="mb-6">
+          <label for="tipo" className="block mb-2 font-medium text-blue-600">
             Tipo de desconto
           </label>
           <select
             id="tipo"
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
           >
             <option selected>Selecione o tipo de desconto</option>
             <option value="de-por">DE / POR</option>
@@ -89,13 +121,13 @@ export const RegisterCampaign = () => {
           </select>
         </div>
 
-        <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div className="grid gap-6 mb-6 md:grid-cols-2">
           {tipo === "de-por" && (
             <>
               <div>
                 <label
                   for="de"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 font-medium text-blue-600"
                 >
                   Preço DE
                 </label>
@@ -103,15 +135,15 @@ export const RegisterCampaign = () => {
                   type="text"
                   value={de}
                   id="de"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
                   required
-                  onChange={e => setDe(e.target.value)}
+                  onChange={(e) => setDe(e.target.value)}
                 />
               </div>
               <div>
                 <label
                   for="por"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 font-medium text-blue-600"
                 >
                   Preço POR
                 </label>
@@ -119,9 +151,9 @@ export const RegisterCampaign = () => {
                   type="text"
                   value={por}
                   id="por"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
                   required
-                  onChange={e => setPor(e.target.value)}
+                  onChange={(e) => setPor(e.target.value)}
                 />
               </div>
             </>
@@ -132,7 +164,7 @@ export const RegisterCampaign = () => {
               <div>
                 <label
                   for="de"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 font-medium text-blue-600"
                 >
                   Leve
                 </label>
@@ -140,15 +172,15 @@ export const RegisterCampaign = () => {
                   type="text"
                   value={leve}
                   id="leve"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
                   required
-                  onChange={e => setLeve(e.target.value)}
+                  onChange={(e) => setLeve(e.target.value)}
                 />
               </div>
               <div>
                 <label
                   for="por"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 font-medium text-blue-600"
                 >
                   Pague
                 </label>
@@ -156,9 +188,9 @@ export const RegisterCampaign = () => {
                   type="text"
                   value={pague}
                   id="pague"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
                   required
-                  onChange={e => setPague(e.target.value)}
+                  onChange={(e) => setPague(e.target.value)}
                 />
               </div>
             </>
@@ -167,7 +199,7 @@ export const RegisterCampaign = () => {
           <div>
             <label
               for="ativacao"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-2 font-medium text-blue-600"
             >
               Data de ativação
             </label>
@@ -175,14 +207,15 @@ export const RegisterCampaign = () => {
               type="date"
               value={ativacao}
               id="ativacao"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
               required
+              onChange={e => setAtivacao(e.target.value)}
             />
           </div>
           <div>
             <label
               for="inativacao"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-2 font-medium text-blue-600"
             >
               Data de inativação
             </label>
@@ -190,14 +223,15 @@ export const RegisterCampaign = () => {
               type="date"
               value={inativacao}
               id="inativacao"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
               required
+              onChange={e => setInativacao(e.target.value)}
             />
           </div>
         </div>
         <button
           type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="p-2 w-200 bg-blue-600 text-white border rounded-lg"
           onClick={handleCampaign}
         >
           salvar

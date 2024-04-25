@@ -40,7 +40,7 @@ export const Products = () => {
         </button>
         <div className="lg:flex items-center lg:justify-between">
           <a href="/">
-            <Image src={logo} width={300} height={200} alt="Logo" />
+            <Image src={logo} width={200} height={100} alt="Logo" />
           </a>
 
           <form className="w-full max-w-lg my-6">
@@ -59,7 +59,7 @@ export const Products = () => {
 
           <div></div>
         </div>
-        <div className="lg:w-full bg-black flex text-sky-600">
+        <div className="lg:w-full text-white flex bg-blue-600">
           <a href="#" className="block w-full md:px-4 py-2">
             Roupas masculinas
           </a>
@@ -74,7 +74,7 @@ export const Products = () => {
           </a>
         </div>
       </Header>
-      <div
+      {/* <div
         id="default-carousel"
         className="relative w-full container mx-auto"
         data-carousel="slide"
@@ -171,8 +171,8 @@ export const Products = () => {
             <span className="sr-only">Next</span>
           </span>
         </button>
-      </div>
-      <div className="flex flex-wrap gap-1 justify-between">
+      </div> */}
+      <div className="flex flex-wrap gap-1 justify-between my-6">
         {filteredProducts.map((product) => (
           <ProductItem key={product.id} product={product} />
         ))}

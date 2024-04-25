@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ProductContext } from "../../../context/productState";
 import { useRouter } from "next/navigation";
 export const ProductItem = ({ product }) => {
+  const [campaignInfo, setCampaignInfo] = useState({})
   const router = useRouter();
-  const { setStorageType, setStorageData } = useContext(ProductContext);
+  const { setStorageType, setStorageData, getStorageData } = useContext(ProductContext);
 
   const handleProductData = (product) => {
     setStorageType("productData");
@@ -13,10 +14,18 @@ export const ProductItem = ({ product }) => {
     router.push("/detalhes");
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+     let [ storageCampaign ] = JSON.parse(localStorage.getItem('campaignData'))
+
+     setCampaignInfo(storageCampaign)
+    }, 4000)
+  }, [getStorageData]);
+
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 border-blue-400">
+    <div className="productImage my-3 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 border-blue-400">
       <Image
-        className="rounded-t-lg"
+        className="p-3"
         src={product.image}
         alt="Imagem do produto"
         width={400}
@@ -24,11 +33,12 @@ export const ProductItem = ({ product }) => {
       />
 
       <div className="p-5">
-        <a href="#">
-          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {product.title}
-          </h5>
-        </a>
+        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          {product.title}
+        </h5>
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          Desconto: {campaignInfo.nome}
+        </p>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {product.description}
         </p>
@@ -39,7 +49,7 @@ export const ProductItem = ({ product }) => {
           onClick={() => handleProductData(product)}
           className="text-blue-600"
         >
-          detalhes do produto
+          ver desconto
         </button>
       </div>
     </div>
