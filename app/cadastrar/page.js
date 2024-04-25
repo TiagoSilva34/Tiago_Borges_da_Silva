@@ -29,7 +29,7 @@ export default function Register() {
 
           <div></div>
         </div>
-        <div className="lg:w-full bg-black flex text-sky-600">
+        <div className="lg:w-full bg-blue-600 flex text-white rounded">
           <a href="#" className="block w-full md:px-4 py-2">
             Roupas masculinas
           </a>

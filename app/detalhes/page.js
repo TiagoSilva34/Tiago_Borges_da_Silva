@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 import Image from "next/image";
 import logo from "../assets/MARCA-FUNDO-BRANCO.png";
 import { ProductContext } from "../context/productState";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { ProductDetailsItem } from "../components/ProductDetails";
 export default function ProductDetails() {
   const { getStorageData } = useContext(ProductContext);
@@ -12,7 +12,7 @@ export default function ProductDetails() {
   useEffect(() => {
     setTimeout(() => {
       getStorageData();
-    }, 4000);
+    }, 1000);
   }, [getStorageData]);
 
   return (
@@ -40,7 +40,7 @@ export default function ProductDetails() {
 
           <div></div>
         </div>
-        <div className="lg:w-full bg-gray-600 flex text-blue-600">
+        <div className="bg-blue-600 flex text-white rounded">
           <a href="#" className="block w-full md:px-4 py-2">
             Roupas masculinas
           </a>

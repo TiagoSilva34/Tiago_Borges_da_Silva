@@ -18,6 +18,11 @@ export const ProductProvider = ({children}) => {
             localStorage.setItem('storageType', JSON.stringify(storageType))
         }
 
+        if(storageData && storageData.id && storageType === "updateCampaign") {
+            localStorage.setItem('updateCampaign', JSON.stringify(storageData))
+            localStorage.setItem('storageType', JSON.stringify(storageType))
+        }
+
         else if (storageType === "campaignData") {
             let campaign = JSON.parse(localStorage.getItem("campaignData"))
             let storageCampaign = [...campaign, storageData]
@@ -37,6 +42,10 @@ export const ProductProvider = ({children}) => {
             const product = JSON.parse(localStorage.getItem("productData"))
 
             return product
+        } else if (storageType === 'updateCampaign') {
+            const update = JSON.parse(localStorage.getItem("updateCampaign"))
+
+            return update
         }
     }
     

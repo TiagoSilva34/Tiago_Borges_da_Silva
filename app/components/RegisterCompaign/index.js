@@ -19,13 +19,7 @@ export const RegisterCampaign = () => {
   const [productName, setProductName] = useState("")
   const [products, setProducts] = useState([]);
 
-  const { setStorageType, setStorageData } = useContext(ProductContext);
-
-  useEffect(() => {
-    ProductService.getAllProducts().then((response) => {
-      setProducts(response);
-    });
-  }, []);
+  const { setStorageType, setStorageData, getStorageData } = useContext(ProductContext);
 
   const handleCampaign = () => {
     const date = new Date()
@@ -58,6 +52,19 @@ export const RegisterCampaign = () => {
     })
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      getStorageData();
+    }, 1000);
+  }, [getStorageData])
+
+  useEffect(() => {
+    if (!getStorageData())
+    ProductService.getAllProducts().then((response) => {
+      setProducts(response);
+    });
+  }, [getStorageData]);
+
   return (
     <div className="px-8 py-8">
       <form>
@@ -67,11 +74,12 @@ export const RegisterCampaign = () => {
           </label>
           <select
             id="tipo"
-            value={productName}
+            value={getStorageData() && getStorageData().title !== undefined ? getStorageData().title : productName}
             onChange={(e) => handleGetDescription(e)}
             className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
+            disabled={getStorageData().title ? true : false}
           >
-            <option>Selecione o produto</option>
+            <option>{getStorageData() && getStorageData().title !== undefined ? getStorageData().title : 'geSelecione o produto'}</option>
             {products.map((product) => (
               <option key={product.id} value={product.title}>{product.title}</option>
             ))}
@@ -99,10 +107,11 @@ export const RegisterCampaign = () => {
           </label>
           <textarea
             onChange={(e) => setDescricao(e.target.value)}
-            value={descricao}
+            value={getStorageData() && getStorageData().description !== undefined ? getStorageData().description : descricao}
             id="descricao"
             rows="4"
             className="border border-blue-600 text-gray-900 rounded-lg focus:border-blue-500 block w-full p-2"
+            disabled={getStorageData().description ? true : false}
           ></textarea>
         </div>
         <div className="mb-6">
